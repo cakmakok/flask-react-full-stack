@@ -3,6 +3,8 @@ services:
     backend:
         build:
             context: ./backend
+            args:
+                HERE_API_SECRET: hfdi-6Pzch71e2nTGd6Hrw_BkoNNAgU4DTv17PlBd7I
         ports:
             - "5000:5000"
         networks:

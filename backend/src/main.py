@@ -1,18 +1,17 @@
 import math
-from collections import defaultdict
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 import json
 import requests
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.sqlite'
 db = SQLAlchemy(app)
 
-
-agency_location_cache={}
+agency_location_cache = {}
 
 
 class Agency(db.Model):
@@ -66,6 +65,8 @@ def sign_up():
             matched_agency = __get_closest_agency_to_broker(address, q.all())
         except Exception:
             return 'Check your address', 400
+    elif q.count() == 0:
+        return 'Agency registration needed for this domain!', 400
     else:
         matched_agency = q.order_by(Agency.id.desc()).first()
 
@@ -89,7 +90,6 @@ def __get_closest_agency_to_broker(broker_address, agency_list):
         raise
     # O(n) runtime
     agency_distance_list = []
-    # TODO: cache agency coordinates for performance
     for a in agency_list:
         agency_coordinates = __get_coordinates_of_address(a.address)
         agency_distance_list.append(
@@ -115,8 +115,7 @@ def __calculate_cartesian_distance(coor1, coor2):
 
 
 def __get_coordinates_of_address(address):
-    #TODO API key must be environment variable
-    api_key = "hfdi-6Pzch71e2nTGd6Hrw_BkoNNAgU4DTv17PlBd7I"
+    api_key = os.environ.get("HERE_API_SECRET")
     geolocation_api = "https://geocode.search.hereapi.com/v1/geocode?apiKey=" + api_key
     query_endpoint = geolocation_api + "&q={}".format(address)
 
@@ -155,7 +154,6 @@ def list_brokers():
 
 def prepopulate_db():
     import csv
-    import os
 
     with open(os.path.dirname(os.path.abspath(__file__)) + '/../data/agency_domain_whitelist.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')

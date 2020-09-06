@@ -1,8 +1,9 @@
 import pytest
 
-from backend.src.main import \
-    app as flask_app,\
-    db as flask_db
+from backend.src.main import app as flask_app
+from backend.src.main import db as flask_db
+from backend.src.main import Broker
+
 
 @pytest.fixture
 def app():
@@ -15,3 +16,7 @@ def client(app):
 @pytest.fixture
 def db():
     yield flask_db
+
+@pytest.fixture
+def all_brokers():
+    return Broker.query.all()
