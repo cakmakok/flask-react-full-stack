@@ -1,6 +1,6 @@
 import json
 
-def test_signup_valid_broker(client, all_brokers):
+def test_signup_valid_broker(client):
 
     data = json.dumps(dict(
         firstname="testuser",
