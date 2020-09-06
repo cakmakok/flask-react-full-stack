@@ -14,6 +14,7 @@ db = SQLAlchemy(app)
 
 agency_location_cache={}
 
+
 class Agency(db.Model):
     __tablename__ = 'agency'
     id = Column(Integer, primary_key=True)
@@ -114,6 +115,7 @@ def __calculate_cartesian_distance(coor1, coor2):
 
 
 def __get_coordinates_of_address(address):
+    #TODO API key must be environment variable
     api_key = "hfdi-6Pzch71e2nTGd6Hrw_BkoNNAgU4DTv17PlBd7I"
     geolocation_api = "https://geocode.search.hereapi.com/v1/geocode?apiKey=" + api_key
     query_endpoint = geolocation_api + "&q={}".format(address)
@@ -155,7 +157,7 @@ def prepopulate_db():
     import csv
     import os
 
-    with open(os.path.dirname(os.path.abspath(__file__)) + '/agency_domain_whitelist.csv') as csv_file:
+    with open(os.path.dirname(os.path.abspath(__file__)) + '/../data/agency_domain_whitelist.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for idx, row in enumerate(csv_reader):
             if idx != 0:
@@ -163,7 +165,7 @@ def prepopulate_db():
                 db.session.add(adw)
                 db.session.commit()
 
-    with open(os.path.dirname(os.path.abspath(__file__)) + '/agency.csv') as csv_file:
+    with open(os.path.dirname(os.path.abspath(__file__)) + '/../data/agency.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for idx, row in enumerate(csv_reader):
             if idx != 0:
@@ -171,7 +173,7 @@ def prepopulate_db():
                 db.session.add(adw)
                 db.session.commit()
 
-    with open(os.path.dirname(os.path.abspath(__file__)) + '/broker.csv') as csv_file:
+    with open(os.path.dirname(os.path.abspath(__file__)) + '/../data/broker.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for idx, row in enumerate(csv_reader):
             if idx != 0:

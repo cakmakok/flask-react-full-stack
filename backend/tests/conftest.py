@@ -1,7 +1,6 @@
 import pytest
 
 from backend.src.main import \
-    initialize_db, \
     app as flask_app,\
     db as flask_db
 
